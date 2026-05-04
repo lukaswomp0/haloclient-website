@@ -15,6 +15,12 @@ export default {
       if (path === "/api/recover" && request.method === "POST") {
         return await handleRecover(request, env);
       }
+      if (path === "/api/admin/grant" && request.method === "POST") {
+        return await handleAdminGrant(request, env);
+      }
+      if (path === "/api/admin/revoke" && request.method === "POST") {
+        return await handleAdminRevoke(request, env);
+      }
     } catch (err) {
       return new Response(`Server error: ${err.message}`, { status: 500 });
     }
@@ -95,4 +101,60 @@ async function handleRecover(request, env) {
   const raw = await env.LICENSES.get(`email:${email.toLowerCase()}`);
   const keys = raw ? JSON.parse(raw) : [];
   return Response.json({ keys });
+}
+
+function checkAdminAuth(request, env) {
+  const auth = request.headers.get("authorization") || "";
+  const token = auth.replace(/^Bearer\s+/i, "");
+  return env.ADMIN_TOKEN && token === env.ADMIN_TOKEN;
+}
+
+async function handleAdminGrant(request, env) {
+  if (!checkAdminAuth(request, env)) {
+    return new Response("unauthorized", { status: 401 });
+  }
+
+  const { email, mode = "payment", note } = await request.json();
+  if (!email) return Response.json({ error: "email required" }, { status: 400 });
+
+  const normalizedEmail = email.toLowerCase();
+  const key = `HELO-${crypto.randomUUID().replace(/-/g, "").slice(0, 20).toUpperCase()}`;
+
+  const data = {
+    key,
+    email: normalizedEmail,
+    mode,
+    status: "active",
+    grantedManually: true,
+    note: note || null,
+    createdAt: Date.now(),
+  };
+
+  await env.LICENSES.put(`key:${key}`, JSON.stringify(data));
+
+  const existingRaw = await env.LICENSES.get(`email:${normalizedEmail}`);
+  const existing = existingRaw ? JSON.parse(existingRaw) : [];
+  existing.push(key);
+  await env.LICENSES.put(`email:${normalizedEmail}`, JSON.stringify(existing));
+
+  return Response.json({ success: true, key, email: normalizedEmail, mode });
+}
+
+async function handleAdminRevoke(request, env) {
+  if (!checkAdminAuth(request, env)) {
+    return new Response("unauthorized", { status: 401 });
+  }
+
+  const { key } = await request.json();
+  if (!key) return Response.json({ error: "key required" }, { status: 400 });
+
+  const raw = await env.LICENSES.get(`key:${key}`);
+  if (!raw) return Response.json({ error: "key not found" }, { status: 404 });
+
+  const data = JSON.parse(raw);
+  data.status = "revoked";
+  data.revokedAt = Date.now();
+  await env.LICENSES.put(`key:${key}`, JSON.stringify(data));
+
+  return Response.json({ success: true, key, status: "revoked" });
 }

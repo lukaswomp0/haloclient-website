@@ -21,9 +21,9 @@ export default function Recover() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-lg w-full bg-card border border-border rounded-xl p-8">
-        <h1 className="text-2xl font-extrabold mb-2">Lizenz wiederherstellen</h1>
+        <h1 className="text-2xl font-extrabold mb-2">Recover license</h1>
         <p className="text-muted-foreground text-sm mb-6">
-          Gib die E-Mail-Adresse ein, mit der du gekauft hast.
+          Enter the email address you used at checkout.
         </p>
 
         <form onSubmit={submit} className="flex gap-2 mb-6">
@@ -32,26 +32,26 @@ export default function Recover() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="dein@email.com"
+            placeholder="your@email.com"
             className="flex-1 px-3 py-2 rounded-lg bg-secondary border border-border text-sm"
           />
           <button
             disabled={loading}
             className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-semibold text-sm disabled:opacity-50"
           >
-            {loading ? "..." : "Suchen"}
+            {loading ? "..." : "Search"}
           </button>
         </form>
 
         {keys && keys.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            Keine Lizenz für diese E-Mail gefunden.
+            No license found for this email.
           </p>
         )}
 
         {keys && keys.length > 0 && (
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground mb-2">Deine Lizenzen:</p>
+            <p className="text-sm text-muted-foreground mb-2">Your licenses:</p>
             {keys.map((k) => (
               <div
                 key={k}
