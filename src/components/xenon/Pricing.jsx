@@ -18,7 +18,7 @@ const plans = [
     ],
     cta: "Get Monthly",
     highlighted: false,
-    url: "https://buy.stripe.com/3cIbJ3d634ov2YN8hW0oM00",
+    url: "https://haloclient.mysellauth.com/product/monthly",
   },
   {
     name: "Lifetime",
@@ -35,7 +35,7 @@ const plans = [
     ],
     cta: "Get Lifetime",
     highlighted: true,
-    url: "https://buy.stripe.com/REPLACE_LIFETIME_LINK",
+    url: "https://haloclient.mysellauth.com/product/lifetime",
   },
 ];
 
