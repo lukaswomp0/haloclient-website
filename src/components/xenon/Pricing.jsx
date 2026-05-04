@@ -18,6 +18,7 @@ const plans = [
     ],
     cta: "Get Monthly",
     highlighted: false,
+    url: "https://buy.stripe.com/3cIbJ3d634ov2YN8hW0oM00",
   },
   {
     name: "Lifetime",
@@ -34,6 +35,7 @@ const plans = [
     ],
     cta: "Get Lifetime",
     highlighted: true,
+    url: "https://buy.stripe.com/REPLACE_LIFETIME_LINK",
   },
 ];
 
@@ -109,16 +111,16 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <button
-
-                className={`w-full py-3 rounded-lg font-semibold text-sm transition-colors ${
+              <a
+                href={plan.url}
+                className={`block text-center w-full py-3 rounded-lg font-semibold text-sm transition-colors ${
                   plan.highlighted
                     ? "bg-primary text-primary-foreground hover:bg-primary/90"
                     : "bg-secondary text-foreground hover:bg-secondary/80"
                 }`}
               >
                 {plan.cta}
-              </button>
+              </a>
             </motion.div>
           ))}
         </div>

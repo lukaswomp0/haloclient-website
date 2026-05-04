@@ -1,0 +1,7 @@
+name = "haloclient-website"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "dist"
+
+[[kv_namespaces]]
+binding = "LICENSES"
+id = "6d5c039d278647fe90d100c598480cb3"
